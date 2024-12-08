@@ -7,9 +7,6 @@ Uses "/" as a word separator and " " between letters.
 # Type parameters
 - `ENC::Bool`: true for encoding to Morse, false for decoding from Morse
 
-# Fields
-- `alphabet_params::AlphabetParameters`: Configuration for alphabet handling
-
 # ToDo
 - Add support for additional Morse code types
   - International Morse code ITU-R M.1677-1
@@ -19,13 +16,11 @@ Uses "/" as a word separator and " " between letters.
   - Tap code
 """
 struct MorseCode{ENC} <: AbstractStreamCipherConfiguration{ENC}
-    alphabet_params::AlphabetParameters
-    
     # Morse code mappings
     to_morse::OrderedDict{Char,String}
     from_morse::Dict{String,Char}
     
-    function MorseCode{ENC}(alphabet_params::AlphabetParameters) where {ENC}
+    function MorseCode{ENC}() where {ENC}
         to_morse = OrderedDict{Char,String}(
             'A' => ".-", 'B' => "-...", 'C' => "-.-.", 'D' => "-..",
             'E' => ".", 'F' => "..-.", 'G' => "--.", 'H' => "....",
@@ -41,29 +36,22 @@ struct MorseCode{ENC} <: AbstractStreamCipherConfiguration{ENC}
         # Create reverse mapping for decoding
         from_morse = Dict(value => key for (key, value) in to_morse)
         
-        new{ENC}(alphabet_params, to_morse, from_morse)
+        new{ENC}(to_morse, from_morse)
     end
 end
 
 """
-    MorseCode(; alphabet_params=AlphabetParameters())
+    MorseCode()
 
-Construct a Morse code encoder/decoder with optional alphabet parameters.
-
-# Keywords
-- `alphabet_params::AlphabetParameters`: Configuration for alphabet handling
+Construct a Morse code encoder/decoder.
 
 # Examples
 ```julia
-# Create default Morse code handler
+# Create Morse code handler
 morse = MorseCode()
-
-# Create with custom alphabet parameters
-params = AlphabetParameters(case_sensitive=true)
-morse = MorseCode(alphabet_params=params)
 ```
 """
-MorseCode(; alphabet_params=AlphabetParameters()) = MorseCode{true}(alphabet_params)
+MorseCode() = MorseCode{true}()
 
 """
     State(morse::MorseCode)
@@ -86,7 +74,7 @@ function process_char!(
     input_char::Char
 )
     state.valid_char_count += 1
-    fixed_char = !iscasesensitive(morse.alphabet_params.case_sensitivity) ? uppercase(input_char) : input_char
+    fixed_char = uppercase(input_char)
     
     if fixed_char == ' '
         return "/ "
@@ -131,9 +119,8 @@ function process_morse!(
             if haskey(morse.from_morse, symbol)
                 push!(letters, string(morse.from_morse[symbol]))
             else
-                # Handle unknown symbols
-                trait = unknown_symbol_handling_trait(morse)
-                push!(letters, string(transform_symbol(trait, '?')))
+                # Handle unknown symbols as empty string
+                continue
             end
         end
         
@@ -173,7 +160,7 @@ Decode Morse code to text.
 - `morse_code::AbstractString`: Morse code to decode, using "/" as word separator
 
 # Returns
-- `String`: Decoded text
+- `String`: Decoded text in uppercase
 """
 function (morse::MorseCode{false})(morse_code::AbstractString)
     isempty(morse_code) && return ""
@@ -205,5 +192,5 @@ decoded = demorse(encoded)   # "HELLO WORLD"
 ```
 """
 function inv(morse::MorseCode{ENC}) where {ENC}
-    MorseCode{!ENC}(morse.alphabet_params)
+    MorseCode{!ENC}()
 end
