@@ -45,11 +45,12 @@ recovered_msg = inv(cipher)(ciphered_msg)  # Returns "HELLO"
 cipher = CaesarCipher(shift=5)
 ```
 
-The first example shows the basic usage of the Caesar cipher, which is one of the simplest substitution ciphers. It creates a cipher with a shift of 3 positions (the traditional shift used by Julius Caesar). When applied to the plaintext "HELLO", it shifts each letter forward by 3 positions in the alphabet, producing "KHOOR". The inverse operation (inv(cipher)) creates a decryption cipher that shifts letters backward by 3 positions, recovering the original message.
+The first example shows the basic usage of the Caesar cipher, which is one of the simplest substitution ciphers. It creates a cipher with a shift of 3 positions (the traditional shift used by Julius Caesar). When applied to the plaintext `"HELLO"`, it shifts each letter forward by 3 positions in the alphabet, producing `"KHOOR"`. The inverse operation (`inv(cipher)`) creates a decryption cipher that shifts letters backward by 3 positions, recovering the original message.
 
 The code then shows how to customize the Caesar cipher by using a different shift value (5 instead of 3), demonstrating the configurable nature of the implementation.
 
 # Create a Vigenère cipher with custom case handling
+
 ```julia
 params = AlphabetParameters(output_case_mode=PRESERVE_CASE)
 cipher = VigenereCipher("SECRET", alphabet_params=params)
@@ -57,7 +58,7 @@ ciphered_msg = cipher("Hello World!")  # Returns "Zincs Pgvnu!"
 recovered_msg = inv(cipher)(ciphered_msg)  # Returns "HELLO WORLD!"
 ```
 
-This second example introduces the more complex Vigenère cipher, which uses a keyword ("SECRET" in this case) to create a polyalphabetic substitution. This example also demonstrates the case handling capabilities of the package through the `AlphabetParameters` configuration. By setting `output_case_mode=PRESERVE_CASE`, the cipher maintains the original case pattern of the input text - notice how `"Hello World!"` maintains its capitalization pattern in the encrypted output `"Zincs Pgvnu!"`.
+This second example introduces the more complex Vigenère cipher, which uses a keyword (`"SECRET"` in this case) to create a polyalphabetic substitution. This example also demonstrates the case handling capabilities of the package through the `AlphabetParameters` configuration. By setting `output_case_mode=PRESERVE_CASE`, the cipher maintains the original case pattern of the input text - notice how `"Hello World!"` maintains its capitalization pattern in the encrypted output `"Zincs Pgvnu!"`.
 
 Both examples showcase the consistent API design where:
 
