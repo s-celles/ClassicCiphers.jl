@@ -26,20 +26,100 @@ Pkg.add("ClassicCiphers")
 
 ## Quick Start
 
+### String API
+
+Lets demonstrates the string processing API for the ClassicCiphers package by showing examples of both the Caesar cipher and Vigenère cipher implementations.
+
 ```julia
 using ClassicCiphers
 
 # Create a Caesar cipher with default settings
-caesar = CaesarCipher(shift=3)
-encrypted = caesar("HELLO")  # Returns "KHOOR"
-decrypted = inv(caesar)(encrypted)  # Returns "HELLO"
+cipher = CaesarCipher(shift=3)
+plain_msg = "HELLO"
+## Cipher message
+ciphered_msg = cipher(plain_msg)  # Returns "KHOOR"
+## Decipher message
+recovered_msg = inv(cipher)(ciphered_msg)  # Returns "HELLO"
+
+## Custom shift value
+cipher = CaesarCipher(shift=5)
+```
+
+The first example shows the basic usage of the Caesar cipher, which is one of the simplest substitution ciphers. It creates a cipher with a shift of 3 positions (the traditional shift used by Julius Caesar). When applied to the plaintext "HELLO", it shifts each letter forward by 3 positions in the alphabet, producing "KHOOR". The inverse operation (inv(cipher)) creates a decryption cipher that shifts letters backward by 3 positions, recovering the original message.
+
+The code then shows how to customize the Caesar cipher by using a different shift value (5 instead of 3), demonstrating the configurable nature of the implementation.
 
 # Create a Vigenère cipher with custom case handling
+```julia
 params = AlphabetParameters(output_case_mode=PRESERVE_CASE)
-vigenere = VigenereCipher("SECRET", alphabet_params=params)
-encrypted = vigenere("Hello World!")  # Returns "Zincs Pgvnu!"
-decrypted = inv(vigenere)(encrypted)  # Returns "HELLO WORLD!"
+cipher = VigenereCipher("SECRET", alphabet_params=params)
+ciphered_msg = cipher("Hello World!")  # Returns "Zincs Pgvnu!"
+recovered_msg = inv(cipher)(ciphered_msg)  # Returns "HELLO WORLD!"
 ```
+
+This second example introduces the more complex Vigenère cipher, which uses a keyword ("SECRET" in this case) to create a polyalphabetic substitution. This example also demonstrates the case handling capabilities of the package through the `AlphabetParameters` configuration. By setting `output_case_mode=PRESERVE_CASE`, the cipher maintains the original case pattern of the input text - notice how `"Hello World!"` maintains its capitalization pattern in the encrypted output `"Zincs Pgvnu!"`.
+
+Both examples showcase the consistent API design where:
+
+1. Ciphers are created with their specific parameters
+2. Encryption is performed by calling the cipher as a function
+3. Decryption is achieved using the inv function to create a decryption cipher
+4. Configuration options are passed through
+
+### Stream API
+
+The Stream API allows processing text one character at a time, making it ideal for:
+
+- Large files that shouldn't be loaded entirely into memory
+- Real-time encryption/decryption of streaming data
+- Chaining multiple ciphers together in a processing pipeline
+
+#### Basic Usage
+
+```julia
+# Create cipher and stream wrapper
+cipher = CaesarCipher(shift=3)
+stream_cipher = StreamCipher(cipher)
+
+# Process individual characters
+fit!(stream_cipher, 'H')
+value(stream_cipher)  # Returns 'K'
+```
+
+#### Cipher Chaining
+
+```julia
+# Create encryption and decryption streams
+cipher = CaesarCipher(shift=3)
+decipher = inv(cipher)
+stream_cipher = StreamCipher(cipher)
+stream_decipher = StreamCipher(decipher)
+
+# Connect them into a pipeline
+connect!(stream_decipher, stream_cipher)
+```
+
+#### File Processing Example
+
+```julia
+# Process a file character by character
+open("input.txt", "r") do input
+   open("output.txt", "w") do output
+      for c in readeach(io, Char)
+         fit!(stream_decipher, c)
+         write(out, value(stream_decipher)) 
+      end
+   end
+end
+```
+
+The Stream API is built on Julia's [OnlineStats.jl](https://joshday.github.io/OnlineStats.jl) framework, providing:
+
+- Memory efficiency through incremental processing
+- Composability through cipher chaining
+- Integration with Julia's IO system
+
+This makes it particularly useful for processing large texts or implementing real-time encryption systems.
 
 ## Core Types
 
