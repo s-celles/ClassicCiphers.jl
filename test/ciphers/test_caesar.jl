@@ -137,49 +137,59 @@ The tests within this block will verify the correctness of the CaesarCipher func
             @test value(stream_decipher) == 'E'
         end
 
-        # @testset "file I/O" begin
-        #     cipher = CaesarCipher()
-        #     decipher = inv(cipher)
-# 
-        #     stream_cipher = StreamCipher(cipher)
-        #     stream_decipher = StreamCipher(decipher)
-        #     connect!(stream_decipher, stream_cipher)  # connect the two ciphers in a chain (cipher -> decipher)
-# 
-        #     # Test file I/O
-        #     input_file = "test.txt"
-        #     output_file = "test_encrypted.txt"
-        #     decrypted_file = "test_decrypted.txt"
-# 
-        #     # Write test data to file
-        #     open(input_file, "w") do io
-        #         write(io, "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog.")
-        #     end
-# 
-        #     # Encrypt file
-        #     open(input_file, "r") do io
-        #         open(output_file, "w") do out
-        #             for c in io
-        #                 fit!(stream_cipher, c)
-        #                 write(out, value(stream_cipher))
-        #             end
-        #         end
-        #     end
-# 
-        #     # Decrypt file
-        #     open(output_file, "r") do io
-        #         open(decrypted_file, "w") do out
-        #             for c in io
-        #                 fit!(stream_decipher, c)
-        #                 write(out, value(stream_decipher))
-        #             end
-        #         end
-        #     end
-# 
-        #     # Verify decrypted file
-        #     open(decrypted_file, "r") do io
-        #         @test read(io, String) == "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
-        #     end
-        # end
+        @testset "file I/O" begin
+            ap_kwargs = Dict(
+                :case_sensitivity => NOT_CASE_SENSITIVE,
+                :output_case_mode => PRESERVE_CASE,
+                :unknown_symbol_handling => IGNORE_SYMBOL,
+            )
+            alphabet_params = AlphabetParameters(; ap_kwargs...)
+            cipher = CaesarCipher(alphabet_params=alphabet_params)
+            decipher = inv(cipher)
+
+            stream_cipher = StreamCipher(cipher)
+            stream_decipher = StreamCipher(decipher)
+            connect!(stream_decipher, stream_cipher)  # connect the two ciphers in a chain (cipher -> decipher)
+
+            # Test file I/O
+            input_file = "test.txt"
+            output_file = "test_encrypted.txt"
+            decrypted_file = "test_decrypted.txt"
+
+            # Write test data to file
+            open(input_file, "w") do io
+                write(io, "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog.")
+            end
+
+            # Encrypt file
+            open(input_file, "r") do io
+                open(output_file, "w") do out
+                    for line in eachline(io)
+                        for c in line
+                            fit!(stream_cipher, c)
+                            write(out, value(stream_cipher))
+                        end
+                        write(out, '\n')  # Preserve line endings
+                    end
+                end
+            end
+
+            # Decrypt file 
+            open(output_file, "r") do io
+                open(decrypted_file, "w") do out
+                    for line in eachline(io)
+                        for c in line
+                            fit!(stream_decipher, c)
+                            write(out, value(stream_decipher)) 
+                        end
+                        write(out, '\n')  # Preserve line endings
+                    end
+                end
+            end
+
+            # Verify decrypted file matches input
+            @test read(input_file, String) * '\n' == read(decrypted_file, String)
+        end
 
     end
 end
