@@ -20,9 +20,11 @@ import Base: inv
 include("base.jl")      # AbstractCipher definition
 include("traits.jl")    # All trait definitions
 include("alphabet.jl")  # Alphabet parameters
+module Tools
 include("tools/formatting.jl")  # Formatting tools
-
+end
 # Then include cipher implementations
 include("ciphers.jl")
+include("codes.jl")
 
 end

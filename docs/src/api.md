@@ -108,7 +108,6 @@ ClassicCiphers.Traits.OutputCaseHandlingTrait
 
 ```@docs
 ClassicCiphers.Ciphers.inv
-ClassicCiphers.Ciphers.process_char!
 ClassicCiphers.Ciphers.transform_index
 ```
 
@@ -166,6 +165,12 @@ ClassicCiphers.Ciphers.get_shift
 
 ```@docs
 ClassicCiphers.Ciphers.VernamCipher
+```
+
+## Codes
+
+```@docs
+ClassicCiphers.Codes.MorseCode
 ```
 
 ## Index

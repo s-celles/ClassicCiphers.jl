@@ -4,9 +4,11 @@ authors = ["s-celles <s.celles@gmail.com> and contributors"]
 version = "0.0.1-DEV"
 
 [deps]
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 OnlineStatsBase = "925886fa-5bf2-5e8e-b522-a9147a512338"
 
 [compat]
+DataStructures = "0.18.20"
 OnlineStatsBase = "1.7.1"
 julia = "1.6.7"
 

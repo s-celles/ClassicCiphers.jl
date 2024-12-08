@@ -1,4 +1,4 @@
-import ClassicCiphers.TextFormatting: group_text, ungroup_text
+import ClassicCiphers.Tools.TextFormatting: group_text, ungroup_text
 
 @testset "Text Formatting Utilities" begin
     @testset "group_text" begin

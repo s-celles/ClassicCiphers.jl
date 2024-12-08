@@ -34,5 +34,5 @@ This distinction is particularly useful in examples and explanations as it allow
     include("ciphers/test_xor.jl")
     include("ciphers/test_vigenere.jl")
     include("ciphers/test_vernam.jl")
-
+    include("codes/test_morse.jl")
 end
