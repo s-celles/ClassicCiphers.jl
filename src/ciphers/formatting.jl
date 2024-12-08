@@ -5,11 +5,15 @@ State for formatting operations, maintaining a buffer of characters being proces
 
 # Fields
 - `buffer::Vector{Char}`: Accumulates characters until a block is complete
+- `total_chars::Int`: Total number of valid characters to process
+- `valid_chars::Int`: Number of valid characters processed so far
 """
-struct FormattingState <: AbstractCipherState
+mutable struct FormattingState <: AbstractCipherState
     buffer::Vector{Char}
+    total_chars::Int
+    valid_chars::Int
     
-    FormattingState() = new(Char[])
+    FormattingState() = new(Char[], 0, 0)
 end
 
 
@@ -78,13 +82,13 @@ function FormattingCipher(;
 end
 
 
-function flush_buffer(state::FormattingState, cipher::FormattingCipher, is_last::Bool=false)
+function flush_buffer(state::FormattingState, cipher::FormattingCipher)
     if isempty(state.buffer)
         return ""
     end
     result = join(state.buffer)
     # Add separator only if we have a full block and it's not the last one
-    if length(state.buffer) == cipher.block_size && !is_last
+    if length(state.buffer) == cipher.block_size && state.valid_chars < state.total_chars
         result *= cipher.separator
     end
     empty!(state.buffer)
@@ -107,6 +111,7 @@ function process_char!(
     if ENC
         # For encryption (formatting), accumulate characters and add separators
         if !isspace(input_char) && !ispunct(input_char)
+            state.valid_chars += 1
             push!(state.buffer, input_char)
             
             # If buffer reaches block size, format and clear
@@ -159,37 +164,24 @@ end
     (cipher::FormattingCipher)(text::AbstractString) -> String
 
 Apply formatting to input text by grouping characters into blocks.
-Overrides the default implementation to handle final buffer flush.
 """
 function (cipher::FormattingCipher)(text::AbstractString)
     isempty(text) && return ""
-    state = State(cipher)
-    result = IOBuffer()
     
-    # Calculate the number of valid characters for block counting
-    valid_chars = count(c -> !isspace(c) && !ispunct(c), text)
-    chars_processed = 0
+    # Count total valid chars
+    state = State(cipher)
+    state.total_chars = count(c -> !isspace(c) && !ispunct(c), text)
+    
+    result = IOBuffer()
     
     # Process each character
     for c in text
-        if !isspace(c) && !ispunct(c)
-            chars_processed += 1
-        end
-        
-        # Check if this will complete a block
-        if length(state.buffer) == cipher.block_size - 1 && !isspace(c) && !ispunct(c)
-            # If this completes a block, we need to know if it's the last full block
-            is_last = chars_processed == valid_chars
-            push!(state.buffer, c)
-            write(result, flush_buffer(state, cipher, is_last))
-        else
-            write(result, process_char!(state, cipher, c))
-        end
+        write(result, process_char!(state, cipher, c))
     end
     
     # Flush any remaining characters in buffer
     if !isempty(state.buffer)
-        write(result, flush_buffer(state, cipher, true))  # true because it's definitely the last block
+        write(result, flush_buffer(state, cipher))
     end
     
     return String(take!(result))
