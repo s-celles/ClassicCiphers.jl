@@ -164,12 +164,9 @@ The tests within this block will verify the correctness of the CaesarCipher func
             # Encrypt file
             open(input_file, "r") do io
                 open(output_file, "w") do out
-                    for line in eachline(io)
-                        for c in line
-                            fit!(stream_cipher, c)
-                            write(out, value(stream_cipher))
-                        end
-                        write(out, '\n')  # Preserve line endings
+                    for c in readeach(io, Char)
+                        fit!(stream_cipher, c)
+                        write(out, value(stream_cipher))
                     end
                 end
             end
@@ -177,18 +174,15 @@ The tests within this block will verify the correctness of the CaesarCipher func
             # Decrypt file 
             open(output_file, "r") do io
                 open(decrypted_file, "w") do out
-                    for line in eachline(io)
-                        for c in line
-                            fit!(stream_decipher, c)
-                            write(out, value(stream_decipher)) 
-                        end
-                        write(out, '\n')  # Preserve line endings
+                    for c in readeach(io, Char)
+                        fit!(stream_decipher, c)
+                        write(out, value(stream_decipher)) 
                     end
                 end
             end
 
             # Verify decrypted file matches input
-            @test read(input_file, String) * '\n' == read(decrypted_file, String)
+            @test read(input_file, String) == read(decrypted_file, String)
         end
 
     end
