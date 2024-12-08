@@ -137,5 +137,49 @@ The tests within this block will verify the correctness of the CaesarCipher func
             @test value(stream_decipher) == 'E'
         end
 
+        # @testset "file I/O" begin
+        #     cipher = CaesarCipher()
+        #     decipher = inv(cipher)
+# 
+        #     stream_cipher = StreamCipher(cipher)
+        #     stream_decipher = StreamCipher(decipher)
+        #     connect!(stream_decipher, stream_cipher)  # connect the two ciphers in a chain (cipher -> decipher)
+# 
+        #     # Test file I/O
+        #     input_file = "test.txt"
+        #     output_file = "test_encrypted.txt"
+        #     decrypted_file = "test_decrypted.txt"
+# 
+        #     # Write test data to file
+        #     open(input_file, "w") do io
+        #         write(io, "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog.")
+        #     end
+# 
+        #     # Encrypt file
+        #     open(input_file, "r") do io
+        #         open(output_file, "w") do out
+        #             for c in io
+        #                 fit!(stream_cipher, c)
+        #                 write(out, value(stream_cipher))
+        #             end
+        #         end
+        #     end
+# 
+        #     # Decrypt file
+        #     open(output_file, "r") do io
+        #         open(decrypted_file, "w") do out
+        #             for c in io
+        #                 fit!(stream_decipher, c)
+        #                 write(out, value(stream_decipher))
+        #             end
+        #         end
+        #     end
+# 
+        #     # Verify decrypted file
+        #     open(decrypted_file, "r") do io
+        #         @test read(io, String) == "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
+        #     end
+        # end
+
     end
 end

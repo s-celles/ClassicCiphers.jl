@@ -74,6 +74,5 @@ This test set ensures that the ROT13 cipher functions correctly.
             @test value(stream_cipher) == 'R'
             @test value(stream_decipher) == 'E'
         end
-
     end
 end
