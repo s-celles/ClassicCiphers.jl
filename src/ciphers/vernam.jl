@@ -51,23 +51,8 @@ end
 
 State(cipher::VernamCipher) = ValidCharCount()
 
-"""
-    transform_char(cipher::VernamCipher{ENC}, input_char::Char, state::AbstractCipherState) where {ENC}
 
-Transform a single character using the Vernam cipher in the specified mode (encryption/decryption).
-
-# Arguments
-- `cipher::VernamCipher{ENC}`: The Vernam cipher instance with encryption/decryption type parameter
-- `input_char::Char`: The character to be transformed
-- `state::AbstractCipherState`: The current state of the cipher
-
-# Returns
-The transformed character
-
-# Note
-The transformation applies bitwise XOR operation between the input character and the key character at the current position.
-"""
-function transform_char(cipher::VernamCipher{ENC}, input_char::Char, state::AbstractCipherState) where {ENC}
+function process_char!(state::AbstractCipherState, cipher::VernamCipher{ENC}, input_char::Char) where {ENC}
     alphabet = cipher.alphabet_params.alphabet
     alphabet_size = length(alphabet)
     

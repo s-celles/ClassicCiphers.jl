@@ -78,27 +78,11 @@ end
 
 State(cipher::VigenereCipher) = ValidCharCount()
 
-"""
-    transform_char(cipher::VigenereCipher{ENC}, input_char::Char, state::VigenereState) where {ENC}
 
-Transform a single character using the Vigenère cipher in the direction specified by `ENC` (encryption or decryption).
-
-# Arguments
-- `cipher::VigenereCipher{ENC}`: The Vigenère cipher instance with the type parameter `ENC` indicating encryption/decryption
-- `input_char::Char`: The character to be transformed
-- `state::VigenereState`: The current state of the Vigenère cipher, tracking position in the key
-
-# Returns
-- `Char`: The transformed character according to the Vigenère algorithm
-
-# Note
-The transformation follows the standard Vigenère cipher rules, shifting the input character
-based on the current key character in the cipher's state.
-"""
-function transform_char(
+function process_char!(
+    state::ValidCharCount,
     cipher::VigenereCipher{ENC},
     input_char::Char,
-    state::ValidCharCount,
 ) where {ENC}
     fixed_input_char = input_char
     alphabet = cipher.alphabet_params.alphabet

@@ -108,7 +108,7 @@ ClassicCiphers.Traits.OutputCaseHandlingTrait
 
 ```@docs
 ClassicCiphers.Ciphers.inv
-ClassicCiphers.Ciphers.transform_char
+ClassicCiphers.Ciphers.process_char!
 ClassicCiphers.Ciphers.transform_index
 ```
 

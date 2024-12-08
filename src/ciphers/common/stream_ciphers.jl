@@ -65,42 +65,11 @@ end
 
 # Base functionality for character transformation
 
-"""
-    transform_char(cipher::AbstractStreamCipherConfiguration{ENC}, input_char::Char) where {ENC}
 
-Transform a single character using the cipher's algorithm. This is the core transformation 
-function that all cipher implementations must support.
-
-# Type parameters
-- `ENC::Bool`: true for encryption, false for decryption
-
-# Arguments
-- `cipher::AbstractStreamCipherConfiguration{ENC}`: The cipher instance performing the transformation
-- `input_char::Char`: Character to transform
-
-# Returns
-- `Char`: Transformed character according to cipher's rules
-
-# Examples
-```julia
-# Using Caesar cipher
-cipher = CaesarCipher(shift=3)
-transform_char(cipher, 'A')  # Returns 'D'
-transform_char(cipher, 'Z')  # Returns 'C'
-
-# Using ROT13
-cipher = ROT13Cipher()
-transform_char(cipher, 'A')  # Returns 'N'
-
-# See also
-- `transform_index`: Transform character positions in the alphabet
-- `CaesarCipher`, `ROT13Cipher`, `SubstitutionCipher`, `VigenereCipher`
-```
-"""
-function transform_char(
+function process_char!(
+    state::AbstractCipherState,
     cipher::AbstractStreamCipherConfiguration{ENC},
     input_char::Char,
-    state::AbstractCipherState,
 ) where {ENC}
     fixed_input_char = input_char
 
@@ -142,7 +111,7 @@ Encrypts or decrypts a single character `plain_char` using the given `cipher` of
 - `Char`: The transformed character after applying the stream cipher.
 """
 (cipher::AbstractStreamCipherConfiguration)(plain_char::Char) =
-    transform_char(cipher, plain_char, cipher.state)
+    process_char!(cipher.state, cipher, plain_char)
 
 """
     (cipher::AbstractStreamCipherConfiguration)(text::AbstractString) -> String
@@ -163,7 +132,7 @@ function (cipher::AbstractStreamCipherConfiguration)(text::AbstractString)
         isempty(cipher.key) && return ""
     end
     state = State(cipher)
-    join(transform_char(cipher, c, state) for c in text)
+    join(process_char!(state, cipher, c) for c in text)
 end
 
 
@@ -201,7 +170,7 @@ OnlineStatsBase's `_fit!` interface for stream ciphers.
 """
 function OnlineStatsBase._fit!(cipher::CIPHER, data) where {CIPHER<:AbstractStreamCipher}
     cipher.n += 1
-    cipher.value = transform_char(cipher.configuration, data, cipher.state)
+    cipher.value = process_char!(cipher.state, cipher.configuration, data)
     fit_listeners!(cipher)
 end
 

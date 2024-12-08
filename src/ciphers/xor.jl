@@ -40,25 +40,11 @@ end
 
 State(cipher::XORCipher) = ValidCharCount()
 
-"""
-    transform_char(
 
-Transforms a single character using XOR operation.
-
-This function is intended to be used as part of XOR cipher operations, where each
-character is transformed by applying the XOR operation with a corresponding key character.
-
-# Arguments
-- `char`: The character to be transformed
-- `key_char`: The key character to XOR with
-
-# Returns
-The XORed character result
-"""
-function transform_char(
+function process_char!(
+    state::ValidCharCount,
     cipher::XORCipher{ENC,T},
     input_char::UInt8,
-    state::ValidCharCount,
 ) where {ENC,T}
     state.valid_char_count += 1
     key_idx = mod1(state.valid_char_count, length(cipher.key))
@@ -86,7 +72,7 @@ function (cipher::XORCipher{ENC,T})(msg::Vector) where {ENC,T}
     state = State(cipher)
     result = similar(msg)
     for i in eachindex(msg)
-        result[i] = transform_char(cipher, msg[i], state)
+        result[i] = process_char!(state, cipher, msg[i])
     end
     
     return result
