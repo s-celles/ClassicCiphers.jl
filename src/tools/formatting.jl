@@ -9,6 +9,7 @@ Format text into blocks of specified size, typically used for cipher text presen
 - `text::AbstractString`: Text to be formatted
 - `block_size::Int=5`: Number of characters per block (default: 5)
 - `separator::String=" "`: String used to separate blocks (default: space)
+- `clean_text::Bool=true`: Remove non-alphanumeric characters from text before grouping
 
 # Examples
 ```julia
@@ -19,22 +20,28 @@ julia> group_text("HELLO", block_size=2)
 "HE LL O"
 ```
 """
-function group_text(text::AbstractString; block_size::Int=5, separator::String=" ")
-    # Remove existing spaces and non-alphanumeric characters
-    cleaned_text = replace(text, r"[^A-Za-z0-9]" => "")
+function group_text(text::AbstractString; block_size::Int=5, separator::String=" ", clean_text=true)
+    if clean_text
+        # Remove existing spaces and non-alphanumeric characters
+        text = replace(text, r"[^A-Za-z0-9]" => "")
+    end
     
     # Split into blocks
-    blocks = [cleaned_text[i:min(i+block_size-1, end)] 
-              for i in 1:block_size:length(cleaned_text)]
+    blocks = [text[i:min(i+block_size-1, end)] 
+              for i in 1:block_size:length(text)]
     
     # Join blocks with separator
     return join(blocks, separator)
 end
 
 """
-    ungroup_text(text::AbstractString) -> String
+    ungroup_text(text::AbstractString; separator=nothing) -> String
 
 Remove grouping formatting from text by removing separators.
+
+# Arguments
+- `text::AbstractString`: Text to be formatted
+- `separator`: String used to separate blocks (default: all non-alphanumeric characters)
 
 # Example
 ```julia
