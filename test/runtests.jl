@@ -26,6 +26,7 @@ This distinction is particularly useful in examples and explanations as it allow
 @testset "ClassicCiphers.jl" begin
 
     include("tools/test_formatting.jl")
+    include("ciphers/test_formatting.jl")
     include("ciphers/test_caesar.jl")
     include("ciphers/test_rot13.jl")
     include("ciphers/test_substitution.jl")

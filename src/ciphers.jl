@@ -29,6 +29,7 @@ include("ciphers/common/stream_ciphers.jl")  # Base stream cipher functionality
 
 # Include all cipher implementations
 
+include("ciphers/formatting.jl")    # Formatting tools
 include("ciphers/substitution.jl")  # Base substitution cipher
 include("ciphers/rot13.jl")         # ROT13 cipher implementation
 include("ciphers/caesar.jl")        # Caesar cipher implementation
