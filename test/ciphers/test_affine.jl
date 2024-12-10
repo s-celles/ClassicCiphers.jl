@@ -1,5 +1,5 @@
 import ClassicCiphers.Ciphers: AffineCipher, CaesarCipher, ROT13Cipher
-import ClassicCiphers.Alphabet: AlphabetParameters
+import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
 
 @testset "AffineCipher" begin
     @testset "Constructor validation" begin
@@ -10,6 +10,15 @@ import ClassicCiphers.Alphabet: AlphabetParameters
         # Test invalid cases
         @test_throws ArgumentError AffineCipher(a = 2, b = 0)  # 2 not coprime with 26
         @test_throws ArgumentError AffineCipher(a = 13, b = 0) # 13 not coprime with 26
+    end
+
+    @testset "Pangram" begin
+        plain_msg = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
+        cipher = AffineCipher(a = 1, b = 3)
+        ciphered_msg = cipher(plain_msg)
+        letters_in_ciphered_msg = Set(collect(ciphered_msg))
+        delete!(letters_in_ciphered_msg, ' ')  # Remove spaces
+        @test letters_in_ciphered_msg == Set(UPPERCASE_LETTERS)  # All letters of alphabet should be present because it's a pangram
     end
 
     @testset "Special cases" begin
