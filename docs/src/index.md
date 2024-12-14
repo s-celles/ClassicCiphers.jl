@@ -5,8 +5,9 @@ A Julia package implementing classical cryptographic ciphers with configurable a
 ## Overview
 
 ClassicCiphers.jl provides implementations of several classical ciphers:
-- Caesar cipher: Shifts each letter by a fixed amount
 - ROT13: A special case of Caesar cipher with shift=13
+- Caesar cipher: Shifts each letter by a fixed amount
+- Affine cipher: Combines multiplication and addition operations, using formula E(x) = (ax + b) mod m, where a and m are coprime
 - Simple substitution cipher: Maps each letter to another using a provided mapping
 - Vigenère cipher: Uses a keyword to determine shifting patterns
 - Vernam cipher: Also known as the one-time pad
