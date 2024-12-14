@@ -128,8 +128,8 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
         ciphertext = cipher(plaintext)
         @test ciphertext == "RCLLA OAPLX"
         decipher = inv(cipher)
-        decrypted = decipher(ciphertext)
-        @test decrypted == plaintext
+        recovered_plaintext = decipher(ciphertext)
+        @test recovered_plaintext == plaintext
 
         # Test with different case handling
         ap_kwargs = Dict(
