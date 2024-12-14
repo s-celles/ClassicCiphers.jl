@@ -31,19 +31,19 @@ The tests within this block will verify the correctness of the CaesarCipher func
             alphabet_params = AlphabetParameters(; ap_kwargs...)
             cipher = CaesarCipher(shift = 3, alphabet_params = alphabet_params)
 
-            p = "..."
-            @test cipher(p) == "..."  # unknown symbols are ignored (not transformed)
+            plaintext = "..."
+            @test cipher(plaintext) == "..."  # unknown symbols are ignored (not transformed)
 
 
-            p = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."  # this is a pangram or holoalphabetic sentence
-            c = cipher(p)
+            plaintext = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."  # this is a pangram or holoalphabetic sentence
+            ciphertext = cipher(plaintext)
             @testset "cipher" begin
-                @test c ==
+                @test ciphertext ==
                       "WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ. WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ."
             end
             @testset "decipher" begin
                 decipher = inv(cipher)
-                @test decipher(c) == uppercase(p)
+                @test decipher(ciphertext) == uppercase(plaintext)
             end
         end
 
@@ -58,15 +58,15 @@ The tests within this block will verify the correctness of the CaesarCipher func
             @test alphabet_params.alphabet ==
                   Vector{Char}("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz")
             cipher = CaesarCipher(shift = 3, alphabet_params = alphabet_params)
-            p = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
-            c = cipher(p)
+            plaintext = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
+            ciphertext = cipher(plaintext)
             @testset "cipher" begin
-                @test c ==
+                @test ciphertext ==
                       "WKH TXLFN EURZQ IRa MXPSV RYHU WKH ODcb GRJ. wkh txlfn eurzq irA mxpsv ryhu wkh odCB grj."
             end
             @testset "decipher" begin
                 decipher = inv(cipher)
-                @test decipher(c) == p
+                @test decipher(ciphertext) == plaintext
             end
         end
 
@@ -79,15 +79,15 @@ The tests within this block will verify the correctness of the CaesarCipher func
         @testset "$(n)" begin
             alphabet_params = AlphabetParameters(; ap_kwargs...)
             cipher = CaesarCipher(shift = 3, alphabet_params = alphabet_params)
-            p = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
-            c = cipher(p)
+            plaintext = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
+            ciphertext = cipher(plaintext)
             @testset "cipher" begin
-                @test c ==
+                @test ciphertext ==
                       "WKH TXLFN EURZQ IRA MXPSV RYHU WKH ODCB GRJ. wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj."
             end
             @testset "decipher" begin
                 decipher = inv(cipher)
-                @test decipher(c) == p
+                @test decipher(ciphertext) == plaintext
             end
         end
 

@@ -131,41 +131,41 @@ function process_morse!(
 end
 
 """
-    (morse::MorseCode{true})(text::AbstractString)
+    (morse::MorseCode{true})(plaintext::AbstractString)
 
 Encode text to Morse code, using "/" as word separator and spaces between letters.
 
 # Arguments
-- `text::AbstractString`: Text to encode
+- `plaintext::AbstractString`: Text to encode
 
 # Returns
 - `String`: Morse code representation
 """
-function (morse::MorseCode{true})(text::AbstractString)
-    isempty(text) && return ""
+function (morse::MorseCode{true})(plaintext::AbstractString)
+    isempty(plaintext) && return ""
     state = State(morse)
     result = ""
-    for c in text
+    for c in plaintext
         result *= process_char!(state, morse, c)
     end
     return rstrip(result)
 end
 
 """
-    (morse::MorseCode{false})(morse_code::AbstractString)
+    (morse::MorseCode{false})(codetext::AbstractString)
 
 Decode Morse code to text.
 
 # Arguments
-- `morse_code::AbstractString`: Morse code to decode, using "/" as word separator
+- `codetext::AbstractString`: Morse code to decode, using "/" as word separator
 
 # Returns
 - `String`: Decoded text in uppercase
 """
-function (morse::MorseCode{false})(morse_code::AbstractString)
-    isempty(morse_code) && return ""
+function (morse::MorseCode{false})(codetext::AbstractString)
+    isempty(codetext) && return ""
     state = State(morse)
-    return process_morse!(state, morse, morse_code)
+    return process_morse!(state, morse, codetext)
 end
 
 """
@@ -186,9 +186,9 @@ morse = MorseCode()
 demorse = inv(morse)
 
 # They perform opposite operations
-message = "HELLO WORLD"
-encoded = morse(message)     # ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."
-decoded = demorse(encoded)   # "HELLO WORLD"
+plaintext  = "HELLO WORLD"
+codetext = morse(plaintext)     # ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."
+recovered_plaintext = demorse(codetext)   # "HELLO WORLD"
 ```
 """
 function inv(morse::MorseCode{ENC}) where {ENC}

@@ -6,9 +6,9 @@ import ClassicCiphers.Alphabet: AlphabetParameters
         test_vectors = [
             # Test vector 1: Classical example
             (
-                plain_msg = Vector{UInt8}("ATTACKATDAWN"),
+                plaintext = Vector{UInt8}("ATTACKATDAWN"),
                 key = Vector{UInt8}("LEMON"),
-                ciphered_msg = UInt8[
+                ciphertext = UInt8[
                     0x0d,
                     0x11,
                     0x19,
@@ -26,9 +26,9 @@ import ClassicCiphers.Alphabet: AlphabetParameters
 
             # Test vector 2
             (
-                plain_msg = Vector{UInt8}("CRYPTOGRAPHY"),
+                plaintext = Vector{UInt8}("CRYPTOGRAPHY"),
                 key = Vector{UInt8}("SECRET"),
-                ciphered_msg = UInt8[
+                ciphertext = UInt8[
                     0x10,
                     0x17,
                     0x1a,
@@ -46,9 +46,9 @@ import ClassicCiphers.Alphabet: AlphabetParameters
 
             # Test vector 3
             (
-                plain_msg = Vector{UInt8}("TOBEORNOTTOBE"),
+                plaintext = Vector{UInt8}("TOBEORNOTTOBE"),
                 key = Vector{UInt8}("KEY"),
-                ciphered_msg = UInt8[
+                ciphertext = UInt8[
                     0x1f,
                     0x0a,
                     0x1b,
@@ -66,20 +66,20 @@ import ClassicCiphers.Alphabet: AlphabetParameters
             ),
         ]
 
-        for (plain_msg, key, expected) in test_vectors
+        for (plaintext, key, expected) in test_vectors
             cipher = XORCipher(key)
-            ciphered_msg = cipher(plain_msg)
+            ciphertext = cipher(plaintext)
 
             # Test encryption
-            @test ciphered_msg == expected
+            @test ciphertext == expected
 
             # Test decryption
-            @test cipher(ciphered_msg) == plain_msg
+            @test cipher(ciphertext) == plaintext
 
             # Test XOR operation byte by byte
-            for i in eachindex(plain_msg)
+            for i in eachindex(plaintext)
                 key_idx = mod1(i, length(key))
-                @test ciphered_msg[i] == plain_msg[i] ⊻ key[key_idx]
+                @test ciphertext[i] == plaintext[i] ⊻ key[key_idx]
             end
         end
     end
@@ -88,24 +88,24 @@ import ClassicCiphers.Alphabet: AlphabetParameters
         key = Vector{UInt8}("KEY")
         cipher = XORCipher(key)
 
-        plain_msg = Vector{UInt8}("HELLO")
-        ciphered_msg = cipher(plain_msg)
+        plaintext = Vector{UInt8}("HELLO")
+        ciphertext = cipher(plaintext)
 
-        @test ciphered_msg != plain_msg
-        @test length(ciphered_msg) == length(plain_msg)
-        @test cipher(ciphered_msg) == plain_msg
+        @test ciphertext != plaintext
+        @test length(ciphertext) == length(plaintext)
+        @test cipher(ciphertext) == plaintext
     end
 
     @testset "Key cycling" begin
         key = Vector{UInt8}("AB")
         cipher = XORCipher(key)
 
-        plain_msg = Vector{UInt8}("XYZ")
-        ciphered_msg = cipher(plain_msg)
+        plaintext = Vector{UInt8}("XYZ")
+        ciphertext = cipher(plaintext)
 
-        @test ciphered_msg[1] == (plain_msg[1] ⊻ key[1])
-        @test ciphered_msg[2] == (plain_msg[2] ⊻ key[2])
-        @test ciphered_msg[3] == (plain_msg[3] ⊻ key[1])  # Key wraps
+        @test ciphertext[1] == (plaintext[1] ⊻ key[1])
+        @test ciphertext[2] == (plaintext[2] ⊻ key[2])
+        @test ciphertext[3] == (plaintext[3] ⊻ key[1])  # Key wraps
     end
 
     @testset "Empty and edge cases" begin

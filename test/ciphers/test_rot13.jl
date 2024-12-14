@@ -19,15 +19,15 @@ This test set ensures that the ROT13 cipher functions correctly.
     @testset "$(n)" begin
         alphabet_params = AlphabetParameters(; ap_kwargs...)
         cipher = ROT13Cipher(alphabet_params = alphabet_params)
-        p = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
-        c = cipher(p)
+        plaintext = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG. the quick brown fox jumps over the lazy dog."
+        ciphertext = cipher(plaintext)
         @testset "cipher" begin
-            @test c ==
+            @test ciphertext ==
                   "GUR DHVPX OEBJA SBK WHZCF BIRE GUR YNML QBT. GUR DHVPX OEBJA SBK WHZCF BIRE GUR YNML QBT."
         end
         @testset "decipher" begin
             decipher = inv(cipher)
-            @test decipher(c) == uppercase(p)
+            @test decipher(ciphertext) == uppercase(plaintext)
         end
     end
 

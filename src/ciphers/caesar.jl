@@ -91,9 +91,9 @@ cipher = CaesarCipher(shift=3)
 decipher = inv(cipher)
 
 # They cancel each other out
-message = "HELLO"
-encrypted = cipher(message)    # "KHOOR"
-decrypted = decipher(encrypted) # "HELLO"
+plaintext = "HELLO"
+ciphertext = cipher(plaintext)    # "KHOOR"
+recovered_plaintext = decipher(ciphertext) # "HELLO"
 ```
 """
 function inv(cipher::CaesarCipher{ENC}) where {ENC}

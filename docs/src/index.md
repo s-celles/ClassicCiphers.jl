@@ -36,11 +36,11 @@ using ClassicCiphers
 
 # Create a Caesar cipher with default settings
 cipher = CaesarCipher(shift=3)
-plain_msg = "HELLO"
+plaintext = "HELLO"
 ## Cipher message
-ciphered_msg = cipher(plain_msg)  # Returns "KHOOR"
+ciphertext = cipher(plaintext)  # Returns "KHOOR"
 ## Decipher message
-recovered_msg = inv(cipher)(ciphered_msg)  # Returns "HELLO"
+recovered_plaintext = inv(cipher)(ciphertext)  # Returns "HELLO"
 
 ## Custom shift value
 cipher = CaesarCipher(shift=5)
@@ -55,8 +55,8 @@ The code then shows how to customize the Caesar cipher by using a different shif
 ```julia
 params = AlphabetParameters(output_case_mode=PRESERVE_CASE)
 cipher = VigenereCipher("SECRET", alphabet_params=params)
-ciphered_msg = cipher("Hello World!")  # Returns "Zincs Pgvnu!"
-recovered_msg = inv(cipher)(ciphered_msg)  # Returns "HELLO WORLD!"
+ciphertext = cipher("Hello World!")  # Returns "Zincs Pgvnu!"
+recovered_plaintext = inv(cipher)(ciphertext)  # Returns "HELLO WORLD!"
 ```
 
 This second example introduces the more complex Vigenère cipher, which uses a keyword (`"SECRET"` in this case) to create a polyalphabetic substitution. This example also demonstrates the case handling capabilities of the package through the `AlphabetParameters` configuration. By setting `output_case_mode=PRESERVE_CASE`, the cipher maintains the original case pattern of the input text - notice how `"Hello World!"` maintains its capitalization pattern in the encrypted output `"Zincs Pgvnu!"`.
@@ -184,8 +184,9 @@ Special case of Caesar cipher with fixed shift of 13, making it self-inverse.
 
 ```julia
 cipher = ROT13Cipher()
-encrypted = cipher("HELLO")  # Returns "URYYB"
-decrypted = cipher(encrypted)  # Returns "HELLO"
+plaintext = "HELLO"
+ciphertext = cipher(plaintext)  # Returns "URYYB"
+recovered_plaintext = cipher(ciphertext)  # Returns "HELLO"
 ```
 
 ### SubstitutionCipher
@@ -243,18 +244,18 @@ All ciphers support:
 ```julia
 # Caesar cipher with default settings
 caesar = CaesarCipher(shift=3)
-message = "THE QUICK BROWN FOX"
-encrypted = caesar(message)
-decrypted = inv(caesar)(encrypted)
-@assert decrypted == uppercase(message)
+plaintext = "THE QUICK BROWN FOX"
+ciphertext = caesar(message)
+recovered_plaintext = inv(caesar)(ciphertext)
+@assert recovered_plaintext == uppercase(plaintext)
 
 # Vigenère cipher with case preservation
 params = AlphabetParameters(output_case_mode=PRESERVE_CASE)
 vigenere = VigenereCipher("SECRET", alphabet_params=params)
-message = "Hello World!"
-encrypted = vigenere(message)
-decrypted = inv(vigenere)(encrypted)
-@assert decrypted == uppercase(message)
+plaintext = "Hello World!"
+ciphertext = vigenere(plaintext)
+recovered_plaintext = inv(vigenere)(ciphertext)
+@assert recovered_plaintext == uppercase(message)
 ```
 
 ### Custom Alphabet

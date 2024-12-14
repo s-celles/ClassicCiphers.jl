@@ -65,10 +65,10 @@ The tests within this block will verify the correctness of the VigenereCipher fu
             "12345",
         ]
 
-        for text in test_cases
-            encrypted = cipher(text)
-            decrypted = decipher(encrypted)
-            @test decrypted == uppercase(text)
+        for plaintext in test_cases
+            ciphertext = cipher(plaintext)
+            recovered_plaintext = decipher(ciphertext)
+            @test recovered_plaintext == uppercase(plaintext)
         end
     end
 
@@ -108,32 +108,32 @@ The tests within this block will verify the correctness of the VigenereCipher fu
     # CrypTool1-Testvectors
     @testset "Others testset" begin
         test_vectors = [
-            (n = 0, key = "LEMON", input = "ATTACKATDAWN", output = "LXFOPVEFRNHR"),
+            (n = 0, plaintext = "ATTACKATDAWN", key = "LEMON", expected_ciphertext = "LXFOPVEFRNHR"),
             (
                 n = 0,
+                plaintext = "CRYPTOISSHORTFORCRYPTOGRAPHY",
                 key = "ABCD",
-                input = "CRYPTOISSHORTFORCRYPTOGRAPHY",
-                output = "CSASTPKVSIQUTGQUCSASTPIUAQJB",
+                expected_ciphertext = "CSASTPKVSIQUTGQUCSASTPIUAQJB",
             ),
             (
                 n = 0,
+                plaintext = "TOBEORNOTTOBETHATISTHEQUESTION",
                 key = "RELATIONS",
-                input = "TOBEORNOTTOBETHATISTHEQUESTION",
-                output = "KSMEHZBBLKSMEMPOGAJXSEJCSFLZSY",
+                expected_ciphertext = "KSMEHZBBLKSMEMPOGAJXSEJCSFLZSY",
             ),
             (
                 n = 0,
+                plaintext = "BEIDERDISKUSSIONDERSICHERHEITEINESVERSCHLUESSELUNGSVERFAHRENSSOLLTEMANIMMERDAVONAUSGEHENDASSDERANGREIFERDASVERFAHRENKENNTABERNICHTDENSCHLUESSELDIEGOLDENEREGELDERKRYPTOGRAPHIEHEISSTUNTERSCHAETZENIEMALSDENKRYPTOANALYTIKEREINVERFAHRENFUERDESSENSICHERHEITMANAUFDIEGEHEIMHALTUNGDESALGORITHMUSANGEWIESENISTHATSCHWEREMAENGEL",
                 key = "QWERTZUIOPASDFGHJKLYXCVBNM",
-                input = "BEIDERDISKUSSIONDERSICHERHEITEINESVERSCHLUESSELUNGSVERFAHRENSSOLLTEMANIMMERDAVONAUSGEHENDASSDERANGREIFERDASVERFAHRENKENNTABERNICHTDENSCHLUESSELDIEGOLDENEREGELDERKRYPTOGRAPHIEHEISSTUNTERSCHAETZENIEMALSDENKRYPTOANALYTIKEREINVERFAHRENFUERDESSENSICHERHEITMANAUFDIEGEHEIMHALTUNGDESALGORITHMUSANGEWIESENISTHATSCHWEREMAENGEL",
-                output = "RAMUXQXQGZUKVNUUMOCQFECFETUEXVBMYAJTRKFMRBNCDCIWIHFHUNJRAQYVGHODOYKTJXTKJGMENHEJELLFYPSCDSVXJLAKYEOGDGRDTWWMXQZIVGEFNJTUCKMCOPDDUFTARJVGFCSHSWOIOLPYWBBPZSRSUHHVKJLGDIOYUFVOROSCFUNUHZJAVJVGUMHOEFLJSHUCOCKMMZCFEWRREXNQYTRWLSBLAPLFOGIGHQHZIJLDHAWRHWUMKPCWLLXWAEVQWALVBLBIZIUFJIKZJVRMOKOIZGIWRXXVCMGTNAVYNHCCNFTGMFZMUJKVE",
+                expected_ciphertext = "RAMUXQXQGZUKVNUUMOCQFECFETUEXVBMYAJTRKFMRBNCDCIWIHFHUNJRAQYVGHODOYKTJXTKJGMENHEJELLFYPSCDSVXJLAKYEOGDGRDTWWMXQZIVGEFNJTUCKMCOPDDUFTARJVGFCSHSWOIOLPYWBBPZSRSUHHVKJLGDIOYUFVOROSCFUNUHZJAVJVGUMHOEFLJSHUCOCKMMZCFEWRREXNQYTRWLSBLAPLFOGIGHQHZIJLDHAWRHWUMKPCWLLXWAEVQWALVBLBIZIUFJIKZJVRMOKOIZGIWRXXVCMGTNAVYNHCCNFTGMFZMUJKVE",
             ),
         ]
-        for (n, key, input, output) in test_vectors
+        for (n, plaintext, key, expected_ciphertext) in test_vectors
             cipher = VigenereCipher(key)
-            c = cipher(input)
-            @test c == output
+            ciphertext = cipher(plaintext)
+            @test ciphertext == expected_ciphertext
             decipher = inv(cipher)
-            @test decipher(c) == input
+            @test decipher(ciphertext) == plaintext
         end
     end
 

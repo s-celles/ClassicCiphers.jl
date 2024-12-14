@@ -33,10 +33,10 @@ The tests within this block will verify the correctness of the SubstitutionCiphe
         cipher = SubstitutionCipher(mapping)
         decipher = inv(cipher)
 
-        message = "ABC"
-        encrypted = cipher(message)
-        @test encrypted == "XYZ"
-        @test decipher(encrypted) == message
+        plaintext = "ABC"
+        ciphertext = cipher(plaintext)
+        @test ciphertext == "XYZ"
+        @test decipher(ciphertext) == plaintext
     end
 
     @testset "stream API" begin

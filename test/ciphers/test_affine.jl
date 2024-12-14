@@ -13,12 +13,12 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
     end
 
     @testset "Pangram" begin
-        plain_msg = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
+        plaintext = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
         cipher = AffineCipher(a = 1, b = 3)
-        ciphered_msg = cipher(plain_msg)
-        letters_in_ciphered_msg = Set(collect(ciphered_msg))
-        delete!(letters_in_ciphered_msg, ' ')  # Remove spaces
-        @test letters_in_ciphered_msg == Set(UPPERCASE_LETTERS)  # All letters of alphabet should be present because it's a pangram
+        ciphertext = cipher(plaintext)
+        letters_in_ciphertext = Set(collect(ciphertext))
+        delete!(letters_in_ciphertext, ' ')  # Remove spaces
+        @test letters_in_ciphertext == Set(UPPERCASE_LETTERS)  # All letters of alphabet should be present because it's a pangram
     end
 
     @testset "Special cases" begin
@@ -40,12 +40,12 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
             ]
 
-            for plain_msg in test_msgs
-                @test affine(plain_msg) == caesar(plain_msg)
+            for plaintext in test_msgs
+                @test affine(plaintext) == caesar(plaintext)
 
                 # Test decryption also matches
-                ciphered_msg = caesar(plain_msg)
-                @test inv(affine)(ciphered_msg) == inv(caesar)(ciphered_msg)
+                ciphertext = caesar(plaintext)
+                @test inv(affine)(ciphertext) == inv(caesar)(ciphertext)
             end
 
             # Test with different alphabet parameters
@@ -57,8 +57,8 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
             caesar = CaesarCipher(shift = 3, alphabet_params = alphabet_params)
             affine = AffineCipher(a = 1, b = 3, alphabet_params = alphabet_params)
 
-            plain_msg = "Hello World!"
-            @test affine(plain_msg) == caesar(plain_msg)
+            plaintext = "Hello World!"
+            @test affine(plaintext) == caesar(plaintext)
         end
 
         # Test case 2: ROT13 (a=1, b=13)
@@ -79,13 +79,13 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
             ]
 
-            for plain_msg in test_msgs
-                @test affine(plain_msg) == rot13(plain_msg)
+            for plaintext in test_msgs
+                @test affine(plaintext) == rot13(plaintext)
 
                 # Test self-inverse property matches
-                ciphered_msg = rot13(plain_msg)
-                @test affine(affine(plain_msg)) == rot13(rot13(plain_msg))
-                @test affine(ciphered_msg) == plain_msg
+                ciphertext = rot13(plaintext)
+                @test affine(affine(plaintext)) == rot13(rot13(plaintext))
+                @test affine(ciphertext) == plaintext
             end
 
             # Test with different alphabet parameters
@@ -97,8 +97,8 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
             rot13 = ROT13Cipher(alphabet_params = alphabet_params)
             affine = AffineCipher(a = 1, b = 13, alphabet_params = alphabet_params)
 
-            plain_msg = "Hello World!"
-            @test affine(plain_msg) == rot13(plain_msg)
+            plaintext = "Hello World!"
+            @test affine(plaintext) == rot13(plaintext)
         end
 
         # Test case 3: Atbash cipher (a=-1, b=25)
@@ -106,12 +106,12 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
             cipher = AffineCipher(a = -1, b = 25)
             @test cipher("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == "ZYXWVUTSRQPONMLKJIHGFEDCBA"
 
-            plain_msg = "HELLO WORLD"
-            ciphered_msg = cipher(plain_msg)
-            @test ciphered_msg == "SVOOL DLIOW"
+            plaintext = "HELLO WORLD"
+            ciphertext = cipher(plaintext)
+            @test ciphertext == "SVOOL DLIOW"
 
             # Atbash is self-inverse
-            @test cipher(ciphered_msg) == plain_msg
+            @test cipher(ciphertext) == plaintext
         end
     end
 
@@ -124,12 +124,12 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
         @test cipher("B") == "N"  # (5*1 + 8) mod 26 = 13 -> N
 
         # Test full message
-        plain_msg = "HELLO WORLD"
-        ciphered_msg = cipher(plain_msg)
-        @test ciphered_msg == "RCLLA OAPLX"
+        plaintext = "HELLO WORLD"
+        ciphertext = cipher(plaintext)
+        @test ciphertext == "RCLLA OAPLX"
         decipher = inv(cipher)
-        decrypted = decipher(ciphered_msg)
-        @test decrypted == plain_msg
+        decrypted = decipher(ciphertext)
+        @test decrypted == plaintext
 
         # Test with different case handling
         ap_kwargs = Dict(
@@ -138,31 +138,31 @@ import ClassicCiphers.Alphabet: AlphabetParameters, UPPERCASE_LETTERS
         )
         alphabet_params = AlphabetParameters(; ap_kwargs...)
         cipher = AffineCipher(a = 5, b = 8, alphabet_params = alphabet_params)
-        plain_msg = "Hello World!"
-        ciphered_msg = cipher(plain_msg)
-        @test ciphered_msg == "Rclla Oaplx!"
-        @test inv(cipher)(ciphered_msg) == plain_msg
+        plaintext = "Hello World!"
+        ciphertext = cipher(plaintext)
+        @test ciphertext == "Rclla Oaplx!"
+        @test inv(cipher)(ciphertext) == plaintext
     end
 
     @testset "Known test vectors" begin
         # Test vectors from literature and other implementations
         test_vectors = [
-            (a = 5, b = 8, plain_msg = "ATTACKATDAWN", ciphered_msg = "IZZISGIZXIOV"),
-            (a = 3, b = 7, plain_msg = "HELLO", ciphered_msg = "CTOOX"),
+            (a = 5, b = 8, plaintext = "ATTACKATDAWN", ciphertext = "IZZISGIZXIOV"),
+            (a = 3, b = 7, plaintext = "HELLO", ciphertext = "CTOOX"),
             (
                 a = 7,
                 b = 3,
-                plain_msg = "THE QUICK BROWN FOX",
-                ciphered_msg = "GAF LNHRV KSXBQ MXI",
+                plaintext = "THE QUICK BROWN FOX",
+                ciphertext = "GAF LNHRV KSXBQ MXI",
             ),
         ]
 
-        for (a, b, plain_msg, ciphered_msg) in test_vectors
+        for (a, b, plaintext, ciphertext) in test_vectors
             cipher = AffineCipher(a = a, b = b)
-            @test cipher(plain_msg) == ciphered_msg
+            @test cipher(plaintext) == ciphertext
 
             decipher = inv(cipher)
-            @test decipher(ciphered_msg) == plain_msg
+            @test decipher(ciphertext) == plaintext
         end
     end
 

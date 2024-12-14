@@ -53,7 +53,8 @@ Create a Vigenère cipher for encryption with the specified key.
 ```julia
 # Create Vigenère cipher with key "SECRET"
 cipher = VigenereCipher("SECRET")
-encrypted = cipher("HELLO")  # Apply keyword-based shift
+plaintext = "HELLO"
+ciphertext = cipher(plaintext)  # Apply keyword-based shift
 
 # Create cipher with custom alphabet parameters
 params = AlphabetParameters(case_sensitive=true)
@@ -145,9 +146,9 @@ cipher = VigenereCipher("SECRET")
 decipher = inv(cipher)
 
 # They cancel each other out
-message = "HELLO"
-encrypted = cipher(message)
-decrypted = decipher(encrypted) # Returns "HELLO"
+plaintext = "HELLO"
+ciphertext = cipher(plaintext)
+recovered_plaintext = decipher(ciphertext) # Returns "HELLO"
 ```
 """
 function inv(cipher::VigenereCipher{ENC}) where {ENC}

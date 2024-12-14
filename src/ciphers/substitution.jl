@@ -82,9 +82,9 @@ cipher = SubstitutionCipher(mapping)
 decipher = inv(cipher)
 
 # They cancel each other out
-message = "ABC"
-encrypted = cipher(message)    # "XYZ"
-decrypted = decipher(encrypted) # "ABC"
+plaintext = "ABC"
+ciphertext = cipher(plaintext)    # "XYZ"
+recovered_plaintext = decipher(ciphertext) # "ABC"
 ```
 """
 function inv(cipher::SubstitutionCipher{ENC}) where {ENC}

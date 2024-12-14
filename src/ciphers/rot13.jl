@@ -71,12 +71,12 @@ cipher = ROT13Cipher()
 decipher = inv(cipher)
 
 # Both perform the same transformation
-message = "HELLO"
-c1 = cipher(message)     # "URYYB"
-c2 = decipher(message)   # "URYYB"
+plaintext = "HELLO"
+ciphertext1 = cipher(plaintext)     # "URYYB"
+ciphertext2 = decipher(plaintext)   # "URYYB"
 
 # Applying either twice returns original
-cipher(cipher(message))  # "HELLO"
+cipher(cipher(plaintext))  # "HELLO"
 ```
 """
 function inv(cipher::ROT13Cipher{ENC}) where {ENC}

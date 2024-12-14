@@ -97,9 +97,9 @@ cipher = AffineCipher(a=5, b=8)
 decipher = inv(cipher)
 
 # They cancel each other out
-message = "HELLO"
-encrypted = cipher(message)
-decrypted = decipher(encrypted) # Returns "HELLO"
+plaintext = "HELLO"
+ciphertext = cipher(plaintext)
+recovered_plaintext = decipher(ciphertext) # Returns "HELLO"
 ```
 """
 function inv(cipher::AffineCipher{ENC}) where {ENC}

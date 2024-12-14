@@ -15,13 +15,13 @@ import ClassicCiphers.Alphabet: AlphabetParameters
         @test morse("HELLO") == ".... . .-.. .-.. ---"
         
         # Test full sentence with spaces
-        plain_msg = "HELLO WORLD"
-        ciphered_msg = ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."
-        @test morse(plain_msg) == ciphered_msg
+        plaintext = "HELLO WORLD"
+        codetext = ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."
+        @test morse(plaintext) == codetext
         
         # Test decoding
         demorse = inv(morse)
-        @test demorse(ciphered_msg) == plain_msg
+        @test demorse(codetext) == plaintext
     end
     
     @testset "Case handling" begin
@@ -65,29 +65,29 @@ import ClassicCiphers.Alphabet: AlphabetParameters
     @testset "Known messages" begin
         test_vectors = [
             (
-                plain_msg = "SOS",
-                morse = "... --- ..."
+                plaintext = "SOS",
+                codetext = "... --- ..."
             ),
             (
-                plain_msg = "HELLO WORLD",
-                morse = ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."
+                plaintext = "HELLO WORLD",
+                codetext = ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."
             ),
             (
-                plain_msg = "THE QUICK BROWN FOX",
-                morse = "- .... . / --.- ..- .. -.-. -.- / -... .-. --- .-- -. / ..-. --- -..-"
+                plaintext = "THE QUICK BROWN FOX",
+                codetext = "- .... . / --.- ..- .. -.-. -.- / -... .-. --- .-- -. / ..-. --- -..-"
             ),
             (
-                plain_msg = "the quick brown fox",
-                morse = "- .... . / --.- ..- .. -.-. -.- / -... .-. --- .-- -. / ..-. --- -..-"
+                plaintext = "the quick brown fox",
+                codetext = "- .... . / --.- ..- .. -.-. -.- / -... .-. --- .-- -. / ..-. --- -..-"
             )
         ]
         
         morse = MorseCode()
         demorse = inv(morse)
         
-        for (plain_msg, morse_code) in test_vectors
-            @test morse(plain_msg) == morse_code
-            @test uppercase(plain_msg) == demorse(morse_code) # Decoding always returns uppercase
+        for (plaintext, codetext) in test_vectors
+            @test morse(plaintext) == codetext
+            @test uppercase(plaintext) == demorse(codetext)  # Decoding always returns uppercase
         end
     end
 end
