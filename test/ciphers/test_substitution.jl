@@ -39,6 +39,12 @@ The tests within this block will verify the correctness of the SubstitutionCiphe
         @test decipher(ciphertext) == plaintext
     end
 
+    @testset "Missing mappings" begin
+        mapping = Dict('A' => 'X', 'B' => 'Y')
+        cipher = SubstitutionCipher(mapping)
+        @test cipher("ABC") == "XYC"  # Unmapped characters preserved
+    end
+
     @testset "stream API" begin
         mapping = Dict('A' => 'X', 'B' => 'Y', 'C' => 'Z')
         cipher = SubstitutionCipher(mapping)

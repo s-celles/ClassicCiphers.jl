@@ -55,7 +55,12 @@ The transformed index according to the cipher's substitution mapping.
 """
 function transform_index(cipher::SubstitutionCipher, index::Int)
     char = cipher.alphabet_params.alphabet[index]
-    findfirst(==(cipher.mapping[char]), cipher.alphabet_params.alphabet)
+    if haskey(cipher.mapping, char)
+        return findfirst(==(cipher.mapping[char]), cipher.alphabet_params.alphabet)
+    else
+        # Preserve unmapped characters
+        return index
+    end
 end
 
 """
