@@ -142,7 +142,7 @@ is_replace(handler::SymbolHandler) = handler.mode == REPLACE_SYMBOL
 
 
 """
-    transform_symbol(handler::SymbolHandler, plain_char::Char)
+    transform_symbol(handler::SymbolHandler, plain_char::Char) -> Union{Char, Nothing}
 
 Transform a single plain character using the provided `SymbolHandler`.
 
@@ -151,13 +151,14 @@ Transform a single plain character using the provided `SymbolHandler`.
 - `plain_char::Char`: The character to be transformed
 
 # Returns
-A transformed character based on the handler's transformation rules.
+- `Char`: The original or replacement character (`IGNORE_SYMBOL`, `REPLACE_SYMBOL`)
+- `nothing`: When the symbol should be removed (`REMOVE_SYMBOL`)
 """
 function transform_symbol(handler::SymbolHandler, plain_char::Char)
     if is_ignore(handler)
         return plain_char
     elseif is_remove(handler)
-        return ""  # TODO REMOVE SYMBOL '' or "" (type inconsistency??)
+        return nothing
     else # REPLACE_SYMBOL
         return handler.replace_symbol
     end

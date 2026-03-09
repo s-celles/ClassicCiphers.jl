@@ -213,6 +213,24 @@ cipher = VigenereCipher("SECRET", alphabet_params=params)
 cipher("Hello")  # Returns "Zincs"
 ```
 
+### MorseCode
+
+Encode and decode Morse code. Supports A-Z and 0-9.
+
+```julia
+# Encoding
+morse = MorseCode()
+morse("HELLO")  # Returns ".... . .-.. .-.. ---"
+morse("SOS")    # Returns "... --- ..."
+
+# Decoding
+demorse = inv(morse)
+demorse(".... . .-.. .-.. ---")  # Returns "HELLO"
+
+# Word separators
+morse("HELLO WORLD")  # Returns ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."
+```
+
 ## Utility Functions
 
 All ciphers support:

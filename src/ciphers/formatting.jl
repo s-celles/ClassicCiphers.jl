@@ -103,6 +103,18 @@ Returns a new FormattingState instance to track character accumulation.
 """
 State(cipher::FormattingCipher) = FormattingState()
 
+# FormattingCipher stream API: output is String (blocks) but accepts Char input
+StreamCipher(cipher::FormattingCipher) = StreamCipher{String}(cipher)
+
+# Override fit! to accept Char input for FormattingCipher StreamCiphers
+function OnlineStatsBase.fit!(
+    o::StreamCipher{<:FormattingCipher,String},
+    y::Char,
+)
+    OnlineStatsBase._fit!(o, y)
+    return o
+end
+
 function process_char!(
     state::FormattingState,
     cipher::FormattingCipher{ENC},

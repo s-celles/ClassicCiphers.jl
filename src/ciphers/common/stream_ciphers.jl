@@ -99,7 +99,7 @@ end
 # Define how cipher types operate
 
 """
-    (cipher::AbstractStreamCipherConfiguration)(plain_char::Char) -> Char
+    (cipher::AbstractStreamCipherConfiguration)(plain_char::Char) -> Union{Char, Nothing}
 
 Encrypts or decrypts a single character `plain_char` using the given `cipher` of type `AbstractStreamCipherConfiguration`.
 
@@ -109,6 +109,7 @@ Encrypts or decrypts a single character `plain_char` using the given `cipher` of
 
 # Returns
 - `Char`: The transformed character after applying the stream cipher.
+- `nothing`: When the symbol is removed by the unknown symbol handler.
 """
 (cipher::AbstractStreamCipherConfiguration)(plain_char::Char) =
     process_char!(cipher.state, cipher, plain_char)
@@ -132,7 +133,7 @@ function (cipher::AbstractStreamCipherConfiguration)(text::AbstractString)
         isempty(cipher.key) && return ""
     end
     state = State(cipher)
-    join(process_char!(state, cipher, c) for c in text)
+    join(r for c in text for r in (process_char!(state, cipher, c),) if r !== nothing)
 end
 
 

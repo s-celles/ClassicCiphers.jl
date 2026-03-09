@@ -1,4 +1,5 @@
 import ClassicCiphers.Ciphers: VigenereCipher
+import ClassicCiphers.Traits: REPLACE_SYMBOL
 
 #=
 This test set is for testing the VigenereCipher implementation.
@@ -78,29 +79,33 @@ The tests within this block will verify the correctness of the VigenereCipher fu
         @test cipher("HELLO WORLD!") == "ZINCS PGVNU!"
     end
 
-    #@testset "Key wraparound" begin
-    #    # Short message with repeating key
-    #    cipher = VigenereCipher("ABC")
-    #    @test cipher("HHHHHH") == "HIHIHI"  # H + A, H + B, H + C, repeat
-    #    
-    #    # Message longer than key
-    #    cipher = VigenereCipher("SECRET")
-    #    @test cipher("AAAAAAAAAAAA") == "SECRETSECRET"  # Key repeats
-    #end
-    #
-    #@testset "Special configurations" begin
-    #    # Test with custom alphabet
-    #    ap_kwargs = Dict(:alphabet=>collect('A':'M'))
-    #    alphabet_params = AlphabetParameters(; ap_kwargs...)
-    #    cipher = VigenereCipher("CAT", alphabet_params=alphabet_params)
-    #    @test_throws ArgumentError cipher("XYZ")  # Letters not in alphabet
-    #    
-    #    # Test unknown symbol handling
-    #    ap_kwargs = Dict(:unknown_symbol_handling=>REPLACE_SYMBOL)
-    #    alphabet_params = AlphabetParameters(; ap_kwargs...)
-    #    cipher = VigenereCipher("KEY", alphabet_params=alphabet_params)
-    #    @test cipher("A1B2C3") == "K?E?Y?"
-    #end
+    @testset "Key wraparound" begin
+        # Short message with repeating key: key "ABC" has shifts [0,1,2]
+        cipher = VigenereCipher("ABC")
+        @test cipher("HHHHHH") == "HIJHIJ"  # H+0=H, H+1=I, H+2=J, repeat
+
+        # Message longer than key
+        cipher = VigenereCipher("SECRET")
+        @test cipher("AAAAAAAAAAAA") == "SECRETSECRET"  # Key repeats
+    end
+
+    @testset "Special configurations" begin
+        # Test with custom alphabet
+        ap_kwargs = Dict(:alphabet => collect('A':'M'))
+        alphabet_params = AlphabetParameters(; ap_kwargs...)
+        # Key "CAB" is valid within A-M alphabet
+        cipher = VigenereCipher("CAB", alphabet_params = alphabet_params)
+        # X, Y, Z are not in alphabet A-M — they are treated as unknown symbols (ignored by default)
+        @test cipher("XYZ") == "XYZ"
+
+        # Test unknown symbol handling with REPLACE_SYMBOL
+        ap_kwargs = Dict(:unknown_symbol_handling => REPLACE_SYMBOL)
+        alphabet_params = AlphabetParameters(; ap_kwargs...)
+        cipher = VigenereCipher("KEY", alphabet_params = alphabet_params)
+        # Digits are unknown symbols, replaced with '?'. Key advances only for valid chars.
+        # A+K=K, 1->?, B+E=F, 2->?, C+Y=A, 3->?
+        @test cipher("A1B2C3") == "K?F?A?"
+    end
 
     # Sources of the test vectors:
     # http://courses.ece.ubc.ca/412/previous_years/2004/modules/sessions/EECE_412-03-crypto_intro-viewable.pdf

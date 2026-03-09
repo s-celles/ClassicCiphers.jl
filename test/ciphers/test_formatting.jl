@@ -1,4 +1,4 @@
-import ClassicCiphers.Ciphers: FormattingCipher
+import ClassicCiphers.Ciphers: FormattingCipher, StreamCipher, fit!, value
 
 @testset "FormattingCipher" begin
     @testset "Basic functionality" begin
@@ -73,19 +73,24 @@ import ClassicCiphers.Ciphers: FormattingCipher
         @test_throws ArgumentError FormattingCipher(block_size=-1)
     end
     
-    #@testset "stream API" begin
-    #    cipher = FormattingCipher(block_size=3)
-    #    stream_cipher = StreamCipher(cipher)
-    #    
-    #    # Feed characters one by one
-    #    fit!(stream_cipher, 'H')
-    #    fit!(stream_cipher, 'E')
-    #    fit!(stream_cipher, 'L')
-    #    @test value(stream_cipher) == "HEL "
-    #    
-    #    fit!(stream_cipher, 'L')
-    #    fit!(stream_cipher, 'O')
-    #    fit!(stream_cipher, 'W')
-    #    @test value(stream_cipher) == "LOW "
-    #end
+    @testset "stream API" begin
+        cipher = FormattingCipher(block_size=3)
+        stream_cipher = StreamCipher(cipher)
+
+        # Feed characters one by one — blocks are emitted without trailing separator
+        # since the stream doesn't know total char count upfront
+        fit!(stream_cipher, 'H')
+        @test value(stream_cipher) == ""
+        fit!(stream_cipher, 'E')
+        @test value(stream_cipher) == ""
+        fit!(stream_cipher, 'L')
+        @test value(stream_cipher) == "HEL"
+
+        fit!(stream_cipher, 'L')
+        @test value(stream_cipher) == ""
+        fit!(stream_cipher, 'O')
+        @test value(stream_cipher) == ""
+        fit!(stream_cipher, 'W')
+        @test value(stream_cipher) == "LOW"
+    end
 end
